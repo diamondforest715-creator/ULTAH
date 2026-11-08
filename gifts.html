@@ -9,6 +9,7 @@
     <link href="./output.css" rel="stylesheet">
     
     <style>
+        /* LAYOUT UTAMA */
         body {
             margin: 0;
             padding: 0;
@@ -26,42 +27,50 @@
         .header-text {
             text-align: center;
             z-index: 10;
-            margin-bottom: 2.5rem;
-            padding: 0 20px;
+            margin-bottom: 2rem;
+            padding: 0 15px;
+            width: 100%;
         }
+        
+        /* UKURAN TEKS DINAMIS: Mengecil di HP, membesar di Laptop */
         .header-title {
             font-family: 'Pacifico', cursive;
-            font-size: 3.5rem;
+            font-size: clamp(2.2rem, 12vw, 4rem); 
             color: #ec4899; 
             margin-bottom: 10px;
             margin-top: 0;
+            word-break: break-word; /* Mencegah teks kepanjangan meluber */
+            line-height: 1.2;
         }
         .header-desc {
             color: #d1d5db;
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
             line-height: 1.6;
             margin: 0;
         }
 
+        /* WADAH KOTAK: Jarak antar kotak diperkecil agar muat 1 baris */
         .boxes-container {
             display: flex;
-            gap: 2rem;
+            gap: clamp(0.8rem, 3vw, 2rem); 
             z-index: 10;
             justify-content: center;
             flex-wrap: wrap; 
+            padding: 0 10px;
         }
         
+        /* KOTAK KADO DINAMIS: Menggunakan clamp agar ukurannya menyesuaikan layar */
         .gift-box {
-            width: 130px;
-            height: 130px;
+            width: clamp(80px, 26vw, 130px); 
+            height: clamp(80px, 26vw, 130px);
             background-color: #db2777; 
-            border-radius: 1.5rem;
-            box-shadow: 0 0 20px rgba(219, 39, 119, 0.6); 
+            border-radius: 1rem;
+            box-shadow: 0 0 15px rgba(219, 39, 119, 0.6); 
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4.5rem; 
-            border: 4px solid #f472b6; 
+            font-size: clamp(2.5rem, 9vw, 4.5rem); 
+            border: 3px solid #f472b6; 
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -71,9 +80,8 @@
             box-shadow: 0 0 35px rgba(219, 39, 119, 0.9);
         }
 
-        .shake {
-            animation: shake-animation 0.4s ease-in-out;
-        }
+        /* Animasi Getar ZONK */
+        .shake { animation: shake-animation 0.4s ease-in-out; }
         @keyframes shake-animation {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             20% { transform: translate(-5px, 0px) rotate(5deg); }
@@ -83,6 +91,7 @@
             100% { transform: translate(1px, -2px) rotate(0deg); }
         }
 
+        /* Tampilan saat ditebak */
         .box-zonk {
             background-color: #374151 !important; 
             border-color: #6b7280 !important; 
@@ -100,6 +109,7 @@
             50% { transform: translateY(-15px) scale(1.1); }
         }
 
+        /* MODAL POP-UP */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -111,6 +121,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
+            padding: 15px; /* Tambahan padding agar modal tidak mentok tepi HP */
         }
         .modal-overlay.active {
             opacity: 1;
@@ -119,10 +130,10 @@
         .modal-content {
             background-color: white;
             color: #1f2937;
-            padding: 2.5rem 2rem;
-            border-radius: 2rem;
-            max-width: 90%;
-            width: 420px;
+            padding: 2rem 1.5rem;
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 400px;
             text-align: center;
             transform: scale(0.5);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -132,21 +143,22 @@
             transform: scale(1);
         }
         
-        .modal-emoji { font-size: 5.5rem; margin-bottom: 10px; }
-        .modal-title { font-family: 'Pacifico', cursive; font-size: 2.5rem; color: #db2777; margin: 0 0 10px 0; }
-        .modal-desc { font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; color: #4b5563; }
+        .modal-emoji { font-size: clamp(4rem, 15vw, 5.5rem); margin-bottom: 10px; }
+        .modal-title { font-family: 'Pacifico', cursive; font-size: clamp(2rem, 8vw, 2.5rem); color: #db2777; margin: 0 0 10px 0; }
+        .modal-desc { font-size: clamp(0.95rem, 4vw, 1.1rem); line-height: 1.5; margin-bottom: 2rem; color: #4b5563; }
         
         .modal-btn {
             background-color: #db2777;
             color: white;
-            padding: 12px 32px;
+            padding: 12px 24px;
             border-radius: 9999px;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
             border: none;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(219,39,119,0.4);
             transition: transform 0.2s, background-color 0.2s;
+            width: 100%; /* Tombol melebar di HP */
         }
         .modal-btn:hover {
             transform: scale(1.05);
@@ -162,13 +174,15 @@
     </style>
 </head>
 <body>
+
     <audio id="sound-zonk" src="music/zonk.mp3"></audio>
-    <audio id="sound-win" src="music/berhasil.mp3"></audio>
+    <audio id="sound-win" src="music/menang.mp3"></audio>
 
     <div class="fairy-lights"></div>
 
     <div class="header-text">
-        <h1 class="header-title">HADIAHHHH</h1>
+        <!-- Teks sudah disesuaikan dengan screenshot kamu -->
+        <h1 class="header-title">HADIAHHH</h1>
         <p class="header-desc">
             Silahkan pilih satu dari ketiga kotak random itu yak sayang.<br>
             milihnya hati hati, posisinya udah ku acak! 😜
@@ -181,6 +195,7 @@
         <div id="box-3" class="gift-box" onclick="openBox(3)">🎁</div>
     </div>
 
+    <!-- MODAL HASIL -->
     <div id="result-modal" class="modal-overlay">
         <div class="modal-content">
             <div id="modal-emoji" class="modal-emoji"></div>
@@ -190,11 +205,12 @@
         </div>
     </div>
 
-<script>
+    <script>
         const soundZonk = document.getElementById('sound-zonk');
         const soundWin = document.getElementById('sound-win');
+        
         let winningBox = Math.floor(Math.random() * 3) + 1; 
-        let isGameOver = false;
+        let isGameOver = false; 
         let currentIsWin = false; 
 
         console.log("Hadiah ada di kotak nomor: " + winningBox);
@@ -204,8 +220,10 @@
             isGameOver = true; 
 
             const boxElement = document.getElementById('box-' + id);
+            
             soundZonk.pause(); soundZonk.currentTime = 0;
             soundWin.pause(); soundWin.currentTime = 0;
+
             if (id !== winningBox) {
                 currentIsWin = false;
                 soundZonk.play().catch(e => console.log("Audio tertahan"));
@@ -218,8 +236,8 @@
                 }, 400);
                 
                 showModal(
-                    "Yahh ZONKK 😜", 
-                    "Wleee salah pilihhh, Kotaknya bakal vabio acak ulang, coba tebak lagi sayang!", 
+                    "Yahh ZONK! 😜", 
+                    "Wleee salah pilih! Kotaknya bakal ku acak ulang nih, coba tebak lagi sayang!", 
                     "Coba Lagi 🔄", 
                     "💩"
                 );
@@ -230,12 +248,12 @@
                 boxElement.classList.add('box-win');
                 boxElement.innerText = "🎁";
                 
-            showModal(
-                "Yeayy Bener! 🎉", 
-                "Selamat cintakuu! Kamu dapet hadiah utamanya! Coba klik tombol di bawah buat ngecek status hadiah kamu dikirim ke mana!", 
-                "Cek Status Pengiriman 🚚", 
-                "🎉"
-            );
+                showModal(
+                    "Yeayy Bener! 🎉", 
+                    "Selamat cintakuu! Kamu dapet hadiah utamanya! Coba klik tombol di bawah buat ngecek status hadiah kamu dikirim ke mana!", 
+                    "Cek Status Pengiriman 🚚", 
+                    "🎉"
+                );
             }
         }
 
@@ -249,22 +267,24 @@
                 document.getElementById('result-modal').classList.add('active');
             }, 400); 
         }
+
         function closeModal() {
-                    document.getElementById('result-modal').classList.remove('active');
-                    soundZonk.pause(); 
-                    soundZonk.currentTime = 0;
-                    
-                    soundWin.pause(); 
-                    soundWin.currentTime = 0;
-                    
-                    if (!currentIsWin) {
-                        setTimeout(resetGame, 400); 
-                    } else {
-                        setTimeout(() => {
-                            window.location.href = "tracking.html";
-                        }, 400);
-                    }
-                }
+            document.getElementById('result-modal').classList.remove('active');
+            
+            soundZonk.pause(); 
+            soundZonk.currentTime = 0;
+            
+            soundWin.pause(); 
+            soundWin.currentTime = 0;
+            
+            if (!currentIsWin) {
+                setTimeout(resetGame, 400); 
+            } else {
+                setTimeout(() => {
+                    window.location.href = "tracking.html";
+                }, 400);
+            }
+        }
 
         function resetGame() {
             for (let i = 1; i <= 3; i++) {
@@ -272,8 +292,10 @@
                 box.className = 'gift-box';
                 box.innerText = '🎁';
             }
+            
             winningBox = Math.floor(Math.random() * 3) + 1;
             console.log("Hadiah pindah ke kotak nomor: " + winningBox);
+            
             isGameOver = false;
         }
     </script>
