@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Wish!</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link href="./output.css" rel="stylesheet">
+    
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+            background-color: #FFD1DC;
+            transition: background-color 2s ease-in-out; 
+        }
+
+        body.dark-mode { background-color: #1a1a2e; }
+        body.dark-mode #title-text { color: #f472b6; }
+        body.dark-mode #sub-text { color: #e5e7eb; } 
+
+        #content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            min-height: 100vh;
+            padding-top: 35vh; 
+            box-sizing: border-box;
+            transition: padding-top 2s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        #content-wrapper.slide-up {
+            padding-top: 8vh; 
+            padding-bottom: 120px;
+        }
+
+        .fade-text {
+            transition: opacity 0.8s ease-in-out, color 2s ease-in-out;
+        }
+        
+        .flame { 
+            width: 20px; height: 35px; background: #FF9D00; border-radius: 50% 50% 20% 20%;
+            box-shadow: 0 0 20px #FF9D00, 0 0 40px #FF9D00; animation: flicker 0.5s infinite alternate;
+            cursor: pointer; margin: 0 auto;
+        }
+        @keyframes flicker { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0.8; } }
+        .candle { width: 30px; height: 100px; background: repeating-linear-gradient(45deg, white, white 10px, pink 10px, pink 20px); margin: 0 auto; border-radius: 5px; }
+        
+        #cake-area {
+            transition: transform 1.5s ease-in-out;
+        }
+
+        #letter-container { 
+            width: 85%;
+            max-width: 480px;
+            margin: 0 auto;
+            max-height: 0; 
+            overflow: hidden; 
+            opacity: 0;
+            transform: translateY(30px);
+            transition: max-height 3s ease-in-out, opacity 2s ease-in-out, transform 2s ease-out, margin-top 1.5s ease; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #letter-container.open { 
+            max-height: 2500px; 
+            opacity: 1;
+            transform: translateY(0);
+            margin-top: 30px;
+        }
+        
+        .fairy-lights { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(255,255,255,0.1) 2px, transparent 3px); background-size: 45px 40px; opacity: 0; transition: opacity 2.5s ease-in-out; z-index: 0; pointer-events: none;}
+    </style>
+</head>
+<body id="main-body">
+
+    <audio id="bgm" src="../music/sempurna.mp3" loop></audio>
+
+    <div class="fairy-lights" id="lights"></div>
+
+    <div id="content-wrapper">
+        <div id="cake-area" class="text-center z-10 shrink-0">
+            <h1 class="font-family-pacifico text-4xl mb-6 text-pink-600 fade-text" id="title-text">Make a Wish!</h1>
+            <p class="mb-8 text-gray-800 fade-text" id="sub-text">Ketuk apinya untuk matiin lilinnya yak sayanngg</p>
+            
+            <div class="mb-10">
+                <div id="flame" class="flame" onclick="blowCandle()"></div>
+                <div class="candle"></div>
+                <div class="w-48 h-20 bg-pink-400 rounded-lg mx-auto mt-2 shadow-lg border-b-8 border-pink-600"></div>
+            </div>
+        </div>
+     
+        <div id="letter-container" class="z-10 text-center">
+            <p class="italic text-lg mb-6 font-bold text-pink-500">"Happy 1st Anniversary, Tuan Putri Cacaa 🤍👑"</p>
+            <div class="text-sm md:text-base mb-4 leading-relaxed text-left space-y-5 text-white">
+                <p>
+                    Happy 1st anniversary, my wifee🤍🤍!! Beneran ga kerasa yaa kita udah sampe di titik ini. Makasii banyaak yaa kamu udah selalu sabar ngadepin tingkah aku, nerima versi aku yang kadang bisa mikir dewasa, tapi kadang juga childish bangettt.
+                </p>
+                <p>
+                    Sayangggg, makasii yaa udah jadi rumah ternyaman buat aku. Makasii udah jadi pasangan yang luar biasa. 1 tahun itu bukan waktu yang sebentar lho, kita udah ngelewatin banyak banget hal. Entah udah berapa banyak badai kecil dan ribuan kata maaf yang kita ucapin untuk saling memperbaiki, dan hebatnya kita tetep milih buat bareng-bareng terus.
+                </p>
+                <p>
+                    Maaf yaa kalau aku masih sering bikin kamu badmood atau kecewa. Tapi kamu jangan pernah ragu ya, aku bakalan terus belajar jadi yang terbaik buat kamu. Semoga perasaan dan sikap kamu ke aku ngga pernah berkurang sama sekali ☹️💞.
+                </p>
+                <p>
+                    Semoga kita akan selalu jadi dua orang yang sama-sama takut kehilangan. Ke depannya, kalau ada apa-apa, sekecil apapun itu, kita selesein baik-baik yaa sayanggg. Kita berjuang terus bareng-bareng sampe hari kemenangan kita tiba. Love youuuu pwoooll! 💞
+                </p>
+            </div>
+            
+            <p class="font-family-pacifico text-2xl w-full text-right mt-8 text-pink-500">- Vabio Rico Afrizan</p>
+            
+            <button class="mt-10 bg-pink-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:scale-110 transition-transform animate-bounce cursor-pointer" onclick="window.location.href='gifts.html'">
+                Ambil Hadiahhh ->
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let blowCount = 0;
+        const flame = document.getElementById('flame');
+        const bgm = document.getElementById('bgm');
+
+        function blowCandle() {
+            flame.style.display = 'none';
+            blowCount++;
+
+            if (blowCount < 3) {
+                setTimeout(() => {
+                    alert(blowCount === 1 ? "Lilinnya bandel 🥺" : "Eh, nyala lagi?! 😭");
+                    flame.style.display = 'block';
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    document.body.classList.add('dark-mode');
+                    document.getElementById('lights').style.opacity = '1';
+                    bgm.play().catch(e => console.log("Auto-play ditolak browser."));
+
+                    const titleText = document.getElementById('title-text');
+                    const subText = document.getElementById('sub-text');
+                    titleText.style.opacity = '0';
+                    subText.style.opacity = '0';
+
+                    setTimeout(() => {
+                        titleText.innerText = "Happy Anniversary sayanggggg ❤️";
+                        subText.innerText = "cieee ada yang bertambah usia nih";
+                        
+                        titleText.style.opacity = '1';
+                        subText.style.opacity = '1';
+                    }, 800); 
+                    setTimeout(() => {
+                        document.getElementById('content-wrapper').classList.add('slide-up');
+                        document.getElementById('cake-area').style.transform = 'scale(0.85)';
+                        document.getElementById('letter-container').classList.add('open');
+                    }, 1200);
+
+                }, 500); 
+            }
+        }
+    </script>
+</body>
+</html>

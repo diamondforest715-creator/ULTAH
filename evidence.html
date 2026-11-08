@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barang Bukti - Galaksi</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link href="./output.css" rel="stylesheet">
+    
+    <style>
+        /* TEMA GALAKSI */
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            background-color: #0b0c10; 
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 12px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 3px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 6px),
+                radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 3px);
+            background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px; 
+            background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+            overflow: hidden; 
+            touch-action: none; 
+        }
+        
+        .flip-card { 
+            perspective: 1000px; 
+            width: 130px; 
+            height: 160px; 
+            position: absolute; 
+            cursor: pointer; 
+            transition: top 0.6s ease, left 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s; 
+            opacity: 0; 
+            transform: scale(0); 
+        }
+        .flip-card.show { opacity: 1; transform: scale(1) rotate(var(--rot)); }
+        
+        .flip-card.centered {
+            top: 45% !important; 
+            left: 50% !important;
+            transform: translate(-50%, -50%) scale(1.8) rotate(0deg) !important;
+        }
+        
+        .flip-card-inner { 
+            position: relative; width: 100%; height: 100%; text-align: center; 
+            transition: transform 0.6s; transform-style: preserve-3d; 
+            box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.3), 0 10px 20px rgba(0,0,0,0.5);
+            border-radius: 8px;
+        }
+        
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        
+        .flip-card-front, .flip-card-back { 
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
+            border-radius: 8px; background: white; padding: 10px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+        }
+        
+        .flip-card-back { 
+            transform: rotateY(180deg); 
+            background: rgba(255, 246, 233, 0.95); 
+            border: 2px solid #FF5C8A; 
+        }
+        
+        .polaroid-img { 
+            width: 100%; height: 100px; background: #ddd; object-fit: cover; margin-bottom: 8px; border-radius: 4px; 
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex items-center justify-center relative">
+
+    <audio id="evidence-bgm" src="../music/monokrom.mp3" loop></audio>
+    
+    <div id="envelope" class="bg-white p-8 rounded-lg shadow-[0_0_20px_10px_rgba(255,92,138,0.4)] text-center cursor-pointer animate-pulse border-4 border-cherry z-50 transition-transform hover:scale-105">
+        <h2 class="text-3xl font-bold text-cherry mb-2">💌</h2>
+        <h2 class="text-xl font-bold text-gray-800">Dokumen Rahasia</h2>
+        <p class="text-sm mt-2 font-bold text-gray-600">Ketuk untuk lanjutttt<br>SAYANGGGGGG</p>
+    </div>
+    
+    <div id="polaroids" class="absolute inset-0 hidden"></div>
+    <div id="overlay" class="fixed inset-0 bg-black/60 z-40 hidden transition-opacity opacity-0 pointer-events-none"></div>
+
+    <button id="final-btn" class="hidden absolute bottom-24 z-99 bg-cherry text-white px-8 py-4 rounded-full font-bold shadow-[0_0_20px_rgba(255,92,138,0.8)] transition-transform hover:scale-110 animate-bounce cursor-pointer" style="z-index: 99999;" onclick="window.location.href='celebration.html'">
+        Semua bukti terkumpul! Lanjut →
+    </button>
+
+    <div id="music-player" class="hidden" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background-color: #181818; z-index: 99999; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; color: white; border-top: 1px solid #282828;">
+        
+        <div style="display: flex; align-items: center; gap: 12px; width: 30%;">
+            <div style="width: 50px; height: 50px; min-width: 50px; border-radius: 6px; overflow: hidden; background: #333;">
+                <img src="../img/1.jpg" alt="Cover" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div style="display: flex; flex-direction: column;">
+                <span style="font-size: 14px; font-weight: bold; margin-bottom: 2px;">Sempurna</span>
+                <span style="font-size: 11px; color: #b3b3b3;">Andra & The Backbone</span>
+            </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; align-items: center; width: 40%;">
+            <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 8px;">
+                <div id="play-pause-btn" onclick="toggleAudio()" style="width: 32px; height: 32px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: black;">
+                    <!-- Icon Pause -->
+                    <svg id="icon-pause" style="width: 14px; height: 14px;" fill="currentColor" viewBox="0 0 16 16"><path d="M2.7 1a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7H2.7zm8 0a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-2.6z"/></svg>
+                    <!-- Icon Play -->
+                    <svg id="icon-play" class="hidden" style="width: 14px; height: 14px; margin-left: 2px; display: none;" fill="currentColor" viewBox="0 0 16 16"><path d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.288V1.713z"/></svg>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div style="display: flex; align-items: center; width: 100%; gap: 10px; font-size: 11px; color: #a7a7a7;">
+                <span id="current-time">0:00</span>
+                <div id="progress-container" onclick="seekAudio(event)" style="flex-grow: 1; height: 5px; background: #4d4d4d; border-radius: 5px; cursor: pointer; position: relative;">
+                    <div id="progress-bar" style="height: 100%; width: 0%; background: #FF5C8A; border-radius: 5px; pointer-events: none; transition: width 0.1s linear;"></div>
+                </div>
+                <span id="duration">0:00</span>
+            </div>
+        </div>
+
+        <div style="width: 30%;"></div>
+    </div>
+
+    <script>
+        const dataFoto = [
+            { src: "../img/1.jpg", laporan: "Senyum ala ala Bidadari surgaaaa" },
+            { src: "../img/2.jpg", laporan: "Error 404: Logika tidak ditemukan saat menatap bidadari satu ini" },
+            { src: "../img/3.jpg", laporan: "Not found: TUAN PUTRI CACA mode DEWASAAA" },
+            { src: "../img/4.png", laporan: "Bahkan eror code saja auto langsung fix kalo liat bidadari satu ini" },
+            { src: "../img/5.jpg", laporan: "Masa depan yang harus diusahakannn" },
+            { src: "../img/6.png", laporan: "Database hati guah auto commit kalau lihat ini" },
+            { src: "../img/7.png", laporan: "Status: Berhasil meretas pikiran guah 24/7" },
+            { src: "../img/8.png", laporan: "Kamera boleh blur, tetapi kecantikannya tidak bisa di blurkan" },
+            { src: "../img/9.jpg", laporan: "Misi: Nemenin joging mamah" },
+            { src: "../img/10.jpg", laporan: "Investigasi: Kenapa bisa ada manusia secantik inii?" },
+            { src: "../img/11.png", laporan: "Misi: Cosplay ibu ibu pengajian" },
+            { src: "../img/12.jpg", laporan: "Kesimpulan Akhir: Target sukses mencuri hatiku selamanya" }
+        ];
+
+        let flippedCount = 0;
+        let highestZIndex = 50; 
+        const polaroidsContainer = document.getElementById('polaroids');
+        const overlay = document.getElementById('overlay');
+        
+        const bgm = document.getElementById('evidence-bgm');
+        const iconPlay = document.getElementById('icon-play');
+        const iconPause = document.getElementById('icon-pause');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+
+        function toggleAudio() {
+            if (bgm.paused) {
+                bgm.play();
+                iconPlay.style.display = 'none';
+                iconPause.style.display = 'block';
+            } else {
+                bgm.pause();
+                iconPause.style.display = 'none';
+                iconPlay.style.display = 'block';
+            }
+        }
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return m + ":" + (s < 10 ? "0" + s : s);
+        }
+
+        bgm.addEventListener('timeupdate', () => {
+            const current = bgm.currentTime;
+            const duration = bgm.duration;
+            if (duration) {
+                const percent = (current / duration) * 100;
+                progressBar.style.width = percent + '%';
+                currentTimeEl.innerText = formatTime(current);
+            }
+        });
+
+        bgm.addEventListener('loadedmetadata', () => {
+            durationEl.innerText = formatTime(bgm.duration);
+        });
+
+        function seekAudio(e) {
+            const container = document.getElementById('progress-container');
+            const width = container.clientWidth;
+            const clickX = e.offsetX;
+            const duration = bgm.duration;
+            bgm.currentTime = (clickX / width) * duration;
+        }
+
+        function sebarFoto() {
+            dataFoto.forEach((foto, index) => {
+                const col = index % 3; 
+                const row = Math.floor(index / 3); 
+                const baseLeft = 15 + (col * 30); 
+                const baseTop = 5 + (row * 18); 
+                const randomLeft = baseLeft + (Math.floor(Math.random() * 8) - 4);
+                const randomTop = baseTop + (Math.floor(Math.random() * 8) - 4);
+                const randomRot = Math.floor(Math.random() * 40) - 20;
+
+                const cardHTML = `
+                    <div class="flip-card" style="top: ${randomTop}%; left: ${randomLeft}%; --rot: ${randomRot}deg; z-index: ${index};" onclick="interaksiFoto(this)">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <img src="${foto.src}" alt="Bukti" class="polaroid-img">
+                                <p class="text-[9px] font-bold text-gray-700">pencet yak👆</p>
+                            </div>
+                            <div class="flip-card-back p-2">
+                                <p class="text-[8px] font-bold text-gray-800 leading-tight">${foto.laporan}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                polaroidsContainer.innerHTML += cardHTML;
+            });
+        }
+
+        document.getElementById('envelope').addEventListener('click', function() {
+            this.style.display = 'none';
+            polaroidsContainer.classList.remove('hidden');
+            
+            document.getElementById('music-player').style.display = 'flex';
+            document.getElementById('music-player').classList.remove('hidden');
+
+            bgm.play().catch(e => {
+                console.log("Audio ditahan browser");
+                iconPause.style.display = 'none';
+                iconPlay.style.display = 'block';
+            });
+            
+            sebarFoto();
+
+            setTimeout(() => {
+                document.querySelectorAll('.flip-card').forEach((card, index) => {
+                    setTimeout(() => { 
+                        card.classList.add('show'); 
+                    }, index * 100); 
+                });
+            }, 100);
+        });
+
+        function interaksiFoto(card) {
+            if (card.classList.contains('centered')) {
+                card.classList.remove('centered');
+                card.classList.remove('flipped'); 
+                
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            } else {
+                document.querySelectorAll('.flip-card.centered').forEach(c => {
+                    c.classList.remove('centered');
+                    c.classList.remove('flipped'); 
+                });
+                
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                
+                card.classList.add('centered');
+                highestZIndex++;
+                if (highestZIndex > 90000) highestZIndex = 50; 
+                card.style.zIndex = highestZIndex;
+                
+                card.classList.add('flipped');
+                
+                if (!card.dataset.opened) {
+                    card.dataset.opened = "true"; 
+                    flippedCount++;
+                    if(flippedCount === 6) {
+                        setTimeout(() => { 
+                            document.getElementById('final-btn').classList.remove('hidden'); 
+                        }, 800);
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
