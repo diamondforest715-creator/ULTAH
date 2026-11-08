@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilih Hadiahmu!</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link href="./output.css" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+            background-color: #1a1a2e;
+            color: white;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .header-text {
+            text-align: center;
+            z-index: 10;
+            margin-bottom: 2.5rem;
+            padding: 0 20px;
+        }
+        .header-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 3.5rem;
+            color: #ec4899; 
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+        .header-desc {
+            color: #d1d5db;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .boxes-container {
+            display: flex;
+            gap: 2rem;
+            z-index: 10;
+            justify-content: center;
+            flex-wrap: wrap; 
+        }
+        
+        .gift-box {
+            width: 130px;
+            height: 130px;
+            background-color: #db2777; 
+            border-radius: 1.5rem;
+            box-shadow: 0 0 20px rgba(219, 39, 119, 0.6); 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4.5rem; 
+            border: 4px solid #f472b6; 
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .gift-box:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 35px rgba(219, 39, 119, 0.9);
+        }
+
+        .shake {
+            animation: shake-animation 0.4s ease-in-out;
+        }
+        @keyframes shake-animation {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-5px, 0px) rotate(5deg); }
+            40% { transform: translate(5px, 2px) rotate(-5deg); }
+            60% { transform: translate(-5px, 1px) rotate(5deg); }
+            80% { transform: translate(5px, -1px) rotate(-5deg); }
+            100% { transform: translate(1px, -2px) rotate(0deg); }
+        }
+
+        .box-zonk {
+            background-color: #374151 !important; 
+            border-color: #6b7280 !important; 
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8) !important;
+            transform: scale(1) !important; 
+        }
+        .box-win {
+            background-color: #facc15 !important; 
+            border-color: #fef08a !important; 
+            box-shadow: 0 0 50px rgba(250, 204, 21, 1) !important; 
+            animation: bounce-win 1s infinite;
+        }
+        @keyframes bounce-win {
+            0%, 100% { transform: translateY(0) scale(1.1); }
+            50% { transform: translateY(-15px) scale(1.1); }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background-color: white;
+            color: #1f2937;
+            padding: 2.5rem 2rem;
+            border-radius: 2rem;
+            max-width: 90%;
+            width: 420px;
+            text-align: center;
+            transform: scale(0.5);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.5);
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-emoji { font-size: 5.5rem; margin-bottom: 10px; }
+        .modal-title { font-family: 'Pacifico', cursive; font-size: 2.5rem; color: #db2777; margin: 0 0 10px 0; }
+        .modal-desc { font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; color: #4b5563; }
+        
+        .modal-btn {
+            background-color: #db2777;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 9999px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(219,39,119,0.4);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .modal-btn:hover {
+            transform: scale(1.05);
+            background-color: #be185d;
+        }
+
+        .fairy-lights {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 1.5px, transparent 2px); 
+            background-size: 80px 80px; 
+            z-index: 0; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <audio id="sound-zonk" src="../music/zonk.mp3"></audio>
+    <audio id="sound-win" src="../music/berhasil.mp3"></audio>
+
+    <div class="fairy-lights"></div>
+
+    <div class="header-text">
+        <h1 class="header-title">HADIAHHHH</h1>
+        <p class="header-desc">
+            Silahkan pilih satu dari ketiga kotak random itu yak sayang.<br>
+            milihnya hati hati, posisinya udah ku acak! 😜
+        </p>
+    </div>
+
+    <div class="boxes-container">
+        <div id="box-1" class="gift-box" onclick="openBox(1)">🎁</div>
+        <div id="box-2" class="gift-box" onclick="openBox(2)">🎁</div>
+        <div id="box-3" class="gift-box" onclick="openBox(3)">🎁</div>
+    </div>
+
+    <div id="result-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="modal-emoji" class="modal-emoji"></div>
+            <h2 id="modal-title" class="modal-title"></h2>
+            <p id="modal-desc" class="modal-desc"></p>
+            <button id="modal-btn" class="modal-btn" onclick="closeModal()"></button>
+        </div>
+    </div>
+
+<script>
+        const soundZonk = document.getElementById('sound-zonk');
+        const soundWin = document.getElementById('sound-win');
+        let winningBox = Math.floor(Math.random() * 3) + 1; 
+        let isGameOver = false;
+        let currentIsWin = false; 
+
+        console.log("Hadiah ada di kotak nomor: " + winningBox);
+
+        function openBox(id) {
+            if (isGameOver) return; 
+            isGameOver = true; 
+
+            const boxElement = document.getElementById('box-' + id);
+            soundZonk.pause(); soundZonk.currentTime = 0;
+            soundWin.pause(); soundWin.currentTime = 0;
+            if (id !== winningBox) {
+                currentIsWin = false;
+                soundZonk.play().catch(e => console.log("Audio tertahan"));
+                
+                boxElement.classList.add('shake');
+                setTimeout(() => {
+                    boxElement.classList.remove('shake');
+                    boxElement.classList.add('box-zonk');
+                    boxElement.innerText = "💩";
+                }, 400);
+                
+                showModal(
+                    "Yahh ZONKK 😜", 
+                    "Wleee salah pilihhh, Kotaknya bakal vabio acak ulang, coba tebak lagi sayang!", 
+                    "Coba Lagi 🔄", 
+                    "💩"
+                );
+            } else {
+                currentIsWin = true;
+                soundWin.play().catch(e => console.log("Audio tertahan"));
+                
+                boxElement.classList.add('box-win');
+                boxElement.innerText = "🎁";
+                
+            showModal(
+                "Yeayy Bener! 🎉", 
+                "Selamat cintakuu! Kamu dapet hadiah utamanya! Coba klik tombol di bawah buat ngecek status hadiah kamu dikirim ke mana!", 
+                "Cek Status Pengiriman 🚚", 
+                "🎉"
+            );
+            }
+        }
+
+        function showModal(title, desc, btnText, emoji) {
+            setTimeout(() => {
+                document.getElementById('modal-title').innerText = title;
+                document.getElementById('modal-desc').innerText = desc;
+                document.getElementById('modal-btn').innerText = btnText;
+                document.getElementById('modal-emoji').innerText = emoji;
+                
+                document.getElementById('result-modal').classList.add('active');
+            }, 400); 
+        }
+        function closeModal() {
+                    document.getElementById('result-modal').classList.remove('active');
+                    soundZonk.pause(); 
+                    soundZonk.currentTime = 0;
+                    
+                    soundWin.pause(); 
+                    soundWin.currentTime = 0;
+                    
+                    if (!currentIsWin) {
+                        setTimeout(resetGame, 400); 
+                    } else {
+                        setTimeout(() => {
+                            window.location.href = "tracking.html";
+                        }, 400);
+                    }
+                }
+
+        function resetGame() {
+            for (let i = 1; i <= 3; i++) {
+                let box = document.getElementById('box-' + i);
+                box.className = 'gift-box';
+                box.innerText = '🎁';
+            }
+            winningBox = Math.floor(Math.random() * 3) + 1;
+            console.log("Hadiah pindah ke kotak nomor: " + winningBox);
+            isGameOver = false;
+        }
+    </script>
+</body>
+</html>

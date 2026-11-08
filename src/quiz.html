@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian Ingatan</title>
+    
+    <!-- Link Font Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link href="./output.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        body { font-family: 'Quicksand', sans-serif; background: #FFF6E9; }
+        .glass { background: rgba(255, 209, 220, 0.5); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="mb-4 text-center">
+        <div class="text-6xl mb-2">🐰</div> 
+        <p class="bg-white p-3 rounded-2xl shadow-md inline-block relative font-bold text-cherry">
+            "Sistem terbuka. tapi jawab beberapa pertanyaan dari vabio dulu"
+            <span class="absolute w-4 h-4 bg-white transform rotate-45 -bottom-2 left-1/2 -translate-x-1/2"></span>
+        </p>
+    </div>
+
+    <div class="glass p-6 rounded-3xl shadow-lg w-full max-w-md text-center">
+        <h2 id="question" class="text-xl font-bold mb-6 text-gray-800">Memuat pertanyaan...</h2>
+        <div id="options" class="flex flex-col gap-3">
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                q: "Siapa yang paling sering bilang 'terserahh' kalo ditanya sesuatu?",
+                options: ["Kamu", "Tuan Putri Caca", "Orang Lain"],
+                correct: 1,
+                wrongMsg: "Eitssss, sayanggg bohong! ingat ingat lagi siapa yang selalu bilang terserahhh 🙄"
+            },
+            {
+                q: "Seberapa besar cinta sayanggg ke vabioooo? :(",
+                options: ["B ajaaaa", "SAYANGGGG BANGETTT DONGGG!!!!", "dihhhh"],
+                correct: 1,
+                wrongMsg: "o gitu, okeee ckp tw :("
+            },
+            {
+                q: "Siapa orang yang paling suka NGAMBEKKKKK",
+                options: ["SAYAAAAAAA", "VABIO gasiii", "Tuan Putri CACAAAAA 🙄"],
+                correct: [0, 2,], 
+                wrongMsg: "Sorry dek, bukannya yang sering ngambek itu SITUUUU 🙄" 
+            }
+        ];
+
+        let currentQ = 0;
+
+        function loadQuestion() {
+            if (currentQ >= quizData.length) {
+                finishQuiz();
+                return;
+            }
+            document.getElementById('question').innerText = quizData[currentQ].q;
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            quizData[currentQ].options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white text-gray-800 py-3 px-4 rounded-xl shadow hover:bg-pinky transition-colors font-bold";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(index) {
+            let isCorrect = Array.isArray(quizData[currentQ].correct) ? 
+                            quizData[currentQ].correct.includes(index) : 
+                            quizData[currentQ].correct === index;
+
+            if (isCorrect) {
+                currentQ++;
+                loadQuestion();
+            } else {
+                alert(quizData[currentQ].wrongMsg);
+            }
+        }
+
+        function finishQuiz() {
+            document.querySelector('.glass').innerHTML = '<h2 class="text-2xl font-bold text-cherry">Ujian Selesai! yeayyyyyyy 🎉</h2><p>Okehhhhh Lanjutttt..........</p>';
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            setTimeout(() => { window.location.href = 'scratch.html'; }, 3000);
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
